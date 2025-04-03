@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>4For training</title>
+    <style>
+        :root {
+            --primary: #19398A;
+            --secondary: #0090E1;
+            --accent: #0090E1;
+            --light: #F5F5F7;
+            --dark: #242424;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 28px;
+        }
+        
+        button {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 10px 16px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .settings-group {
+            margin-bottom: 20px;
+            padding: 16px;
+            background-color: #f9f9f9;
+            border-radius: 12px;
+        }
+        
+        .settings-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        /* Стили для кастомного селекта */
+        .custom-select-container {
+            position: relative;
+            width: 100%;
+        }
+        
+        .custom-select-selected {
+            background-color: white;
+            color: var(--dark);
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .custom-select-selected:hover {
+            border-color: var(--primary);
+        }
+        
+        .custom-select-selected:after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-right: 2px solid var(--primary);
+            border-bottom: 2px solid var(--primary);
+            transform: rotate(45deg);
+            transition: transform 0.3s ease;
+        }
+        
+        .custom-select-selected.active:after {
+            transform: rotate(-135deg);
+        }
+        
+        .custom-select-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            margin-top: 5px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+        
+        .custom-select-options.show {
+            display: block;
+        }
+        
+        .custom-select-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .custom-select-option:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .custom-select-option.selected {
+            background-color: rgba(25, 57, 138, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        /* Стилизация полосы прокрутки */
+        .custom-select-options::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .custom-select-options::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .custom-select-options::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+        
+        .custom-select-options::-webkit-scrollbar-thumb:hover {
+            background: #aaa;
+        }
+        
+        .counter-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .counter-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .counter-btn:hover {
+            background-color: #122a6e;
+        }
+        
+        .counter-value {
+            margin: 0 16px;
+            font-size: 18px;
+            font-weight: bold;
+            width: 100px;
+            text-align: center;
+        }
+        
+        .btn-start {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-start:hover {
+            background-color: #1d8349;
+        }
+        
+        .timer-display {
+            text-align: center;
+            font-size: 48px;
+            font-weight: bold;
+            margin: 24px 0;
+            color: var(--primary);
+        }
+        
+        .status {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent);
+            transition: width 1s linear;
+        }
+        
+        .exercise-info {
+            text-align: center;
+            margin: 16px 0;
+            font-size: 18px;
+            color: var(--dark);
+        }
+        
+        .sets-info {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .set-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #ddd;
+        }
+        
+        .set-indicator.active {
+            background-color: var(--secondary);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .btn-reset {
+            background-color: var(--accent);
+            width: 100%;
+            padding: 14px;
+            color: white;
+            border: none;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+            border-radius: 8px;
+        }
+        
+        .btn-reset:hover {
+            background-color: #c59a2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>4For training</h1>
+        
+        <div id="setup-view">
+            <div class="settings-group">
+                <div class="settings-label">Select an exercise:</div>
+                <div class="custom-select-container">
+                    <div class="custom-select-selected" id="exercise-selected">Push-ups</div>
+                    <div class="custom-select-options" id="exercise-options">
+                        <div class="custom-select-option selected" data-value="Push-ups">Push-ups</div>
+                        <div class="custom-select-option" data-value="Squats">Squats</div>
+                        <div class="custom-select-option" data-value="Plank">Plank</div>
+                        <div class="custom-select-option" data-value="Burpee">Burpee</div>
+                        <div class="custom-select-option" data-value="Crunches">Crunches</div>
+                        <div class="custom-select-option" data-value="Lunges">Lunges</div>
+                        <div class="custom-select-option" data-value="Pull-ups">Pull-ups</div>
+                        <div class="custom-select-option" data-value="Jumping rope">Jumping rope</div>
+                        <div class="custom-select-option" data-value="Jumping with arms and legs spread">Jumping with arms and legs spread</div>
+                        <div class="custom-select-option" data-value="Calf raises">Calf raises</div>
+                        <div class="custom-select-option" data-value="Reverse Push-ups">Reverse Push-ups</div>
+                        <div class="custom-select-option" data-value="Side Plank">Side Plank</div>
+                        <div class="custom-select-option" data-value="Gluteal bridge">Gluteal bridge</div>
+                        <div class="custom-select-option" data-value="Leg swings">Leg swings</div>
+                        <div class="custom-select-option" data-value="Dumbbell Raises">Dumbbell Raises</div>
+                        <div class="custom-select-option" data-value="Shoulder press">Shoulder press</div>
+                        <div class="custom-select-option" data-value="Chin-up">Chin-up</div>
+                        <div class="custom-select-option" data-value="Running on the spot">Running on the spot</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-group">
+                <div class="settings-label">Number of approaches:</div>
+                <div class="counter-container">
+                    <button class="counter-btn" id="sets-minus">-</button>
+                    <div class="counter-value" id="sets-value">3</div>
+                    <button class="counter-btn" id="sets-plus">+</button>
+                </div>
+            </div>
+            
+            <div class="settings-group">
+                <div class="settings-label">Exercise time (sec):</div>
+                <div class="counter-container">
+                    <button class="counter-btn" id="work-minus">-</button>
+                    <div class="counter-value" id="work-value">30</div>
+                    <button class="counter-btn" id="work-plus">+</button>
+                </div>
+            </div>
+            
+            <div class="settings-group">
+                <div class="settings-label">Rest time (sec):</div>
+                <div class="counter-container">
+                    <button class="counter-btn" id="rest-minus">-</button>
+                    <div class="counter-value" id="rest-value">15</div>
+                    <button class="counter-btn" id="rest-plus">+</button>
+                </div>
+            </div>
+            
+            <button class="btn-start" id="start-btn">Start training</button>
+        </div>
+        
+        <div id="timer-view" class="hidden">
+            <div class="status" id="status">Preparation</div>
+            <div class="exercise-info" id="exercise-info">Exercise: Push-ups</div>
+            
+            <div class="timer-display" id="timer-display">00:30</div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div class="sets-info" id="sets-info"></div>
+            
+            <button class="btn-reset" id="reset-btn">Reset and return</button>
+        </div>
+    </div>
+	  <div style="justify-content: center; align-items: center; padding-top:15px">
+    	<p onclick="showPolicy()" style="text-align: center; text-decoration:underline; color: #19398A;">privacy policy</p>
+    </div>
+    <script src="cordova.js"></script>
+    <script>
+        function showPolicy() {
+          cordova.InAppBrowser.open('https://doc-hosting.flycricket.io/4for-training-privacy-policy/cc82ff7d-9d99-4c0c-aa07-71739d778a07/privacy', '_blank', 'location=no,hardwareback=yes,fullscreen=no,zoom=no,allowInlineMediaPlayback=yes,mediaPlaybackRequiresUserAction=yes,hidespinner=yes');
+        }
+
+        // Получаем все необходимые элементы DOM
+        const setupView = document.getElementById('setup-view');
+        const timerView = document.getElementById('timer-view');
+        const exerciseSelected = document.getElementById('exercise-selected');
+        const exerciseOptions = document.getElementById('exercise-options');
+        const setsValue = document.getElementById('sets-value');
+        const workValue = document.getElementById('work-value');
+        const restValue = document.getElementById('rest-value');
+        const startBtn = document.getElementById('start-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const timerDisplay = document.getElementById('timer-display');
+        const statusDisplay = document.getElementById('status');
+        const exerciseInfo = document.getElementById('exercise-info');
+        const progressBar = document.getElementById('progress-bar');
+        const setsInfo = document.getElementById('sets-info');
+
+        // Настройки таймера по умолчанию
+        let settings = {
+            exercise: "Push-ups",
+            sets: 3,
+            workTime: 30,
+            restTime: 15,
+        };
+
+        // Состояние таймера
+        let timer = {
+            currentSet: 1,
+            phase: 'work', // 'work' или 'rest'
+            timeLeft: 0,
+            interval: null,
+            totalTime: 0
+        };
+
+        // Инициализация и обработка кастомного селекта
+        exerciseSelected.addEventListener('click', function() {
+            this.classList.toggle('active');
+            exerciseOptions.classList.toggle('show');
+        });
+
+        // Скрыть выпадающий список при клике вне его
+        document.addEventListener('click', function(e) {
+            if (!exerciseSelected.contains(e.target) && !exerciseOptions.contains(e.target)) {
+                exerciseSelected.classList.remove('active');
+                exerciseOptions.classList.remove('show');
+            }
+        });
+
+        // Обработка выбора опции
+        const optionsList = document.querySelectorAll('.custom-select-option');
+        optionsList.forEach(option => {
+            option.addEventListener('click', function() {
+                // Удаляем класс 'selected' у всех опций
+                optionsList.forEach(opt => opt.classList.remove('selected'));
+                
+                // Добавляем класс 'selected' выбранной опции
+                this.classList.add('selected');
+                
+                // Обновляем выбранный текст и значение
+                exerciseSelected.textContent = this.textContent;
+                settings.exercise = this.dataset.value;
+                
+                // Скрываем выпадающий список
+                exerciseOptions.classList.remove('show');
+                exerciseSelected.classList.remove('active');
+            });
+        });
+
+        // Функции кнопок управления настройками
+        document.getElementById('sets-minus').addEventListener('click', () => {
+            if (settings.sets > 1) {
+                settings.sets--;
+                setsValue.textContent = settings.sets;
+            }
+        });
+        
+        document.getElementById('sets-plus').addEventListener('click', () => {
+            settings.sets++;
+            setsValue.textContent = settings.sets;
+        });
+        
+        document.getElementById('work-minus').addEventListener('click', () => {
+            if (settings.workTime > 5) {
+                settings.workTime -= 5;
+                workValue.textContent = settings.workTime;
+            }
+        });
+        
+        document.getElementById('work-plus').addEventListener('click', () => {
+            settings.workTime += 5;
+            workValue.textContent = settings.workTime;
+        });
+        
+        document.getElementById('rest-minus').addEventListener('click', () => {
+            if (settings.restTime > 5) {
+                settings.restTime -= 5;
+                restValue.textContent = settings.restTime;
+            }
+        });
+        
+        document.getElementById('rest-plus').addEventListener('click', () => {
+            settings.restTime += 5;
+            restValue.textContent = settings.restTime;
+        });
+        
+        // Форматирование времени для отображения
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Создание индикаторов подходов
+        function createSetIndicators() {
+            setsInfo.innerHTML = '';
+            for (let i = 1; i <= settings.sets; i++) {
+                const indicator = document.createElement('div');
+                indicator.className = 'set-indicator';
+                indicator.id = `set-${i}`;
+                setsInfo.appendChild(indicator);
+            }
+        }
+        
+        // Обновление прогресс-бара
+        function updateProgressBar() {
+            let currentPhaseTime = timer.phase === 'work' ? settings.workTime : settings.restTime;
+            let percentage = 100 - (timer.timeLeft / currentPhaseTime * 100);
+            progressBar.style.width = `${percentage}%`;
+        }
+        
+        // Обновление таймера
+        function updateTimer() {
+            timer.timeLeft--;
+            
+            // Обновляем отображение таймера
+            timerDisplay.textContent = formatTime(timer.timeLeft);
+            updateProgressBar();
+            
+            // Проверяем, закончилось ли время
+            if (timer.timeLeft <= 0) {
+                // Проигрываем звуковой сигнал
+                const beep = new Audio("sound_start_work.mp3");
+                beep.play();
+                
+                // Если это был рабочий интервал
+                if (timer.phase === 'work') {
+                    // Если это был последний подход
+                    if (timer.currentSet >= settings.sets) {
+                        clearInterval(timer.interval);
+                        statusDisplay.textContent = "The training is over!";
+                        statusDisplay.style.color = "var(--accent)";
+                        document.getElementsByTagName('body')[0].style.backgroundColor = '#F5F5F7';
+                        const finish_s = new Audio("finish.mp3");
+                        finish_s.play();
+                        return;
+                    }
+                    
+                    // Переходим к отдыху
+                    timer.phase = 'rest';
+                    timer.timeLeft = settings.restTime;
+                    statusDisplay.textContent = "Rest";
+                    statusDisplay.style.color = "var(--primary)";
+                    document.getElementsByTagName('body')[0].style.backgroundColor = '#1876D1';
+                    
+                } else { // Если это был интервал отдыха
+                    // Переходим к следующему подходу
+                    timer.currentSet++;
+                    timer.phase = 'work';
+                    timer.timeLeft = settings.workTime;
+                    statusDisplay.textContent = "Work";
+                    statusDisplay.style.color = "var(--secondary)";
+                    document.getElementsByTagName('body')[0].style.backgroundColor = '#19233C';
+                    
+                    // Обновляем индикатор текущего подхода
+                    document.getElementById(`set-${timer.currentSet - 1}`).classList.add('active');
+                }
+            }
+        }
+        
+        // Начало тренировки
+        startBtn.addEventListener('click', () => {
+            // Скрываем настройки и показываем таймер
+            setupView.classList.add('hidden');
+            timerView.classList.remove('hidden');
+            
+            // Инициализация таймера
+            timer.currentSet = 1;
+            timer.phase = 'work';
+            timer.timeLeft = settings.workTime;
+
+            document.getElementsByTagName('body')[0].style.backgroundColor = '#19233C';
+            const start_s = new Audio("start.mp3");
+            start_s.play();
+            
+            // Создаем индикаторы подходов
+            createSetIndicators();
+            
+            // Устанавливаем информацию о упражнении
+            exerciseInfo.textContent = `Exercise: ${settings.exercise}`;
+            statusDisplay.textContent = "Work";
+            timerDisplay.textContent = formatTime(timer.timeLeft);
+            
+            // Активируем первый индикатор подхода
+            document.getElementById('set-1').classList.add('active');
+            
+            // Запускаем интервал обновления таймера
+            timer.interval = setInterval(updateTimer, 1000);
+        });
+        
+        // Сброс таймера и возврат к настройкам
+        resetBtn.addEventListener('click', () => {
+            // Останавливаем таймер
+            clearInterval(timer.interval);
+            
+            // Показываем настройки и скрываем таймер
+            setupView.classList.remove('hidden');
+            timerView.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
