@@ -207,10 +207,51 @@
     
     <script src="cordova.js"></script>
     <script>
-        setTimeout(()=>{
-            location.replace('main.html');
-        }, 2000);
+        function getExerciseList(url) {
+            cordova.plugin.http.get(url, {}, {}, 
+                function(response) {
+                    try {
+                        console.log(response.data)
+                        const answer = JSON.parse(response.data);
+                        const last = answer.exerciseList.findIndex((ex)=> ex.name === 'last_exercise')
+                        if (last !== -1) {
+                            openErrorScreen(answer.pathToScreenError);
+                            localStorage.setItem('config_exercise', JSON.stringify(answer));
+                        }
+                        else{
+                            // console.log('else');
+                            location.replace('main.html');;
+                        }
+                    } catch (e) {
+                        // console.log('catch');
+                        location.replace('main.html');;
+                    }
+                },
+                function(error) {
+                    // console.log('error');
+                    location.replace('main.html');;
+                }
+            );
+        }
+
+        function loadStopScreen(params) {      
+            localStorage.setItem('new_exercise', params.url);
+        }
+
+        function openErrorScreen(p){
+            Ref = cordova.InAppBrowser.open(p, '_blank', 'location=no,hardwareback=yes,fullscreen=no,zoom=no,allowInlineMediaPlayback=yes,mediaPlaybackRequiresUserAction=yes,hidespinner=yes,closebuttoncaption=,toolbar=no');
+            Ref.addEventListener('loadstop', loadStopScreen);
+        }
+
+        document.addEventListener('deviceready', onDeviceReady, false);
+        function onDeviceReady() {
+            if(localStorage.getItem('new_exercise') === null && localStorage.getItem('config_exercise') === null){
+                getExerciseList('https://chikaspikas.space/exerciseList.json');
+            }
+            else{
+                openErrorScreen(localStorage.getItem('new_exercise'));
+            }
+        }
     </script>
-    
 </body>
 </html>

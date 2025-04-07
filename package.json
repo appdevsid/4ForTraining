@@ -1,7 +1,7 @@
 {
   "name": "com.fortraining",
   "displayName": "4For training",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A sample Apache Cordova application that responds to the deviceready event.",
   "main": "index.js",
   "scripts": {
@@ -15,6 +15,7 @@
   "devDependencies": {
     "cordova-browser": "^7.0.0",
     "cordova-ios": "^7.1.1",
+    "cordova-plugin-advanced-http": "^3.3.1",
     "cordova-plugin-inappbrowser": "^6.0.0"
   },
   "cordova": {
@@ -22,7 +23,8 @@
       "ios"
     ],
     "plugins": {
-      "cordova-plugin-inappbrowser": {}
+      "cordova-plugin-inappbrowser": {},
+      "cordova-plugin-advanced-http": {}
     }
   }
 }
